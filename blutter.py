@@ -211,7 +211,7 @@ def build_and_run(input: BlutterInput):
 
 def main_no_flutter(libapp_path: str, dart_version: str, outdir: str, rebuild_blutter: bool, create_vs_sln: bool, no_analysis: bool):
     version, os_name, arch = dart_version.split('_')
-    dart_info = DartLibInfo(version, os_name, arch)
+    dart_info = DartLibInfo(version, os_name, arch, False)
     input = BlutterInput(libapp_path, dart_info, outdir, rebuild_blutter, create_vs_sln, no_analysis)
     build_and_run(input)
     

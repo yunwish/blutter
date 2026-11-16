@@ -184,6 +184,9 @@ static VarValue* getPoolObject(DartApp& app, intptr_t offset, A64::Register dstR
 }
 
 static inline void handleDecompressPointer(AsmIterator& insn, arm64_reg reg) {
+#ifndef DART_COMPRESSED_POINTERS
+	return;
+#endif
 	INSN_ASSERT(insn.id() == ARM64_INS_ADD);
 	INSN_ASSERT(insn.ops(0).reg == insn.ops(1).reg && insn.ops(0).reg == reg);
 	INSN_ASSERT(insn.ops(2).reg == CSREG_DART_HEAP && insn.ops(2).shift.value == 32);
@@ -3282,8 +3285,10 @@ std::unique_ptr<WriteBarrierInstr> FunctionAnalyzer::processWriteBarrierInstr(As
 
 	INSN_ASSERT(insn.id() == ARM64_INS_TST);
 	INSN_ASSERT(insn.ops(0).reg == CSREG_DART_TMP);
+#ifdef DART_COMPRESSED_POINTERS
 	INSN_ASSERT(insn.ops(1).reg == CSREG_DART_HEAP);
 	INSN_ASSERT(insn.ops(1).shift.type == ARM64_SFT_LSR && insn.ops(1).shift.value == 32);
+#endif
 	++insn;
 
 	INSN_ASSERT(insn.id() == ARM64_INS_B && insn.cc() == ARM64_CC_EQ);
